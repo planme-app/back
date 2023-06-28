@@ -31,9 +31,38 @@ export class UserService {
     });
   }
 
+  async getUserByEmail(email: string): Promise<user | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+    });
+  }
+
   async createUser(data: Prisma.userCreateInput): Promise<user> {
     return this.prisma.user.create({
       data,
     });
+  }
+
+  async encryptPassword(password: string): Promise<string> {
+    const saltRounds = 10;
+    const hashedPassword = await bycrypt.hash(password, saltRounds);
+    return hashedPassword;
+  }
+
+  async comparePassword(
+    plainTextPassword: string,
+    hashedPassword: string,
+  ): Promise<boolean> {
+    const isPasswordMatch = await bycrypt.compare(
+      plainTextPassword,
+      hashedPassword,
+    );
+
+    return isPasswordMatch;
+  }
+
+  async checkEmail(email: string): Promise<boolean> {
+    const user = await this.getUserByEmail(email);
+    return user ? true : false;
   }
 }

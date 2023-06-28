@@ -6,10 +6,41 @@ import { user as userModel } from '@prisma/client';
 export class UserController {
   constructor(private userService: UserService) {}
 
-  @Post('')
-  async signupUser(
-    @Body() userData: { email: string; passwd: string; name: string },
+  @Post('signup')
+  async signup(
+    @Body() user: { email: string; passwd: string; name: string },
   ): Promise<userModel> {
-    return this.userService.createUser(userData);
+    const isExistingUser = await this.userService.checkEmail(user.email);
+    if (!isExistingUser) {
+      const hashedPassword = await this.userService.encryptPassword(
+        user.passwd,
+      );
+      return this.userService.createUser({
+        email: user.email,
+        name: user.name,
+        passwd: hashedPassword,
+      });
+    }
+  }
+
+  @Post('signin')
+  async signin(
+    @Body() user: { email: string; passwd: string },
+  ): Promise<userModel> {
+    const searchUser = await this.userService.getUserByEmail(user.email);
+    if (!searchUser) {
+      return null;
+    }
+
+    const isMatchPassword = await this.userService.comparePassword(
+      user.passwd,
+      searchUser.passwd,
+    );
+
+    if (!isMatchPassword) {
+      return null;
+    }
+
+    return searchUser;
   }
 }
