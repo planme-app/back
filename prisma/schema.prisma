@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoutineType {
+  time
+  count
+  bool
+}
+
+model user {
+  user_id    String    @id @default(uuid())
+  email      String    @unique
+  passwd     String
+  name       String
+  created_at DateTime  @default(now())
+  routine    routine[]
+}
+
+model routine {
+  routine_id          String             @id @default(uuid())
+  user_id             String
+  user                user               @relation(fields: [user_id], references: [user_id])
+  title               String
+  type                RoutineType
+  is_repeat           Boolean
+  days_of_week_binary String
+  created_at          DateTime           @default(now())
+  deleted_at          DateTime?
+  routine_instance    routine_instance[]
+}
+
+model routine_instance {
+  routine_instance_id    String                   @id @default(uuid())
+  routine_id             String
+  created_at             DateTime                 @default(now())
+  routine                routine                  @relation(fields: [routine_id], references: [routine_id])
+  count_routine_instance count_routine_instance[]
+  time_routine_instance  time_routine_instance[]
+  bool_routine_instance  bool_routine_instance[]
+}
+
+model count_routine_instance {
+  count_routine_instance_id String           @id @default(uuid())
+  routine_instance_id       String
+  routine_instance          routine_instance @relation(fields: [routine_instance_id], references: [routine_instance_id])
+  goal                      Int
+  progress                  Int
+}
+
+model time_routine_instance {
+  time_routine_instance_id String           @id @default(uuid())
+  routine_instance_id      String
+  routine_instance         routine_instance @relation(fields: [routine_instance_id], references: [routine_instance_id])
+  goal                     Int
+  progress                 Int
+}
+
+model bool_routine_instance {
+  bool_routine_instance_id String           @id @default(uuid())
+  routine_instance_id      String
+  routine_instance         routine_instance @relation(fields: [routine_instance_id], references: [routine_instance_id])
+  goal                     Boolean
+  progress                 Boolean
+}
+
+model routine_template {
+  routine_template_id String      @id @default(uuid())
+  title               String
+  section             String
+  logo_url            String
+  type                RoutineType
+}
