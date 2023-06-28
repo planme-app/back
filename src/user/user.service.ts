@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Prisma, user, user as userModel } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
@@ -80,13 +85,19 @@ export class UserService {
           passwd: hashedPassword,
         });
       } else {
-        throw new UnauthorizedException('User with this email already exists');
+        throw new ConflictException('User with this email already exists');
       }
     } catch (error) {
-      if (error.status === 401) {
-        throw new UnauthorizedException(error.response.message);
+      if (error.status === 409) {
+        throw new ConflictException(error.response.message, {
+          cause: new Error(),
+          description: error.response.message,
+        });
       } else {
-        throw new UnauthorizedException('Invalid email or password');
+        throw new InternalServerErrorException('Internal server error', {
+          cause: new Error(),
+          description: 'Internal server error',
+        });
       }
     }
   }
@@ -106,7 +117,17 @@ export class UserService {
       }
       return searchUser;
     } catch (error) {
-      throw new UnauthorizedException('Invalid email or password');
+      if (error.status === 401) {
+        throw new ConflictException(error.response.message, {
+          cause: new Error(),
+          description: error.response.message,
+        });
+      } else {
+        throw new InternalServerErrorException('Internal server error', {
+          cause: new Error(),
+          description: 'An unknown error occurred',
+        });
+      }
     }
   }
 }
