@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
-import { Prisma, user } from '@prisma/client';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Prisma, user, user as userModel } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { signupDto } from './dto/signup.dto';
+import { signinDto } from './dto/signin.dto';
 
 @Injectable()
 export class UserService {
@@ -65,5 +67,46 @@ export class UserService {
   async checkEmail(email: string): Promise<boolean> {
     const user = await this.getUserByEmail(email);
     return user ? true : false;
+  }
+
+  async signup(signupDto: signupDto): Promise<userModel> {
+    try {
+      const isExistingUser = await this.checkEmail(signupDto.email);
+      if (!isExistingUser) {
+        const hashedPassword = await this.encryptPassword(signupDto.passwd);
+        return this.createUser({
+          email: signupDto.email,
+          name: signupDto.name,
+          passwd: hashedPassword,
+        });
+      } else {
+        throw new UnauthorizedException('User with this email already exists');
+      }
+    } catch (error) {
+      if (error.status === 401) {
+        throw new UnauthorizedException(error.response.message);
+      } else {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+    }
+  }
+
+  async signin(signinDto: signinDto): Promise<userModel> {
+    try {
+      const searchUser = await this.getUserByEmail(signinDto.email);
+      if (!searchUser) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+      const isMatchPassword = await this.comparePassword(
+        signinDto.passwd,
+        searchUser.passwd,
+      );
+      if (!isMatchPassword) {
+        throw new UnauthorizedException('Invalid email or password');
+      }
+      return searchUser;
+    } catch (error) {
+      throw new UnauthorizedException('Invalid email or password');
+    }
   }
 }
