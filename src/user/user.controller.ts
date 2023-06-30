@@ -13,7 +13,7 @@ export class UserController {
       const isExistingEmail = await this.userService.checkEmail(
         signupDto.email,
       );
-      if (isExistingEmail) {
+      if (!isExistingEmail) {
         const newUser = this.userService.signup(signupDto);
         res.status(201).json({ user: newUser });
       } else {

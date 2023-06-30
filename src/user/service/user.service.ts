@@ -11,7 +11,7 @@ export class UserService {
 
   async checkEmail(email: string): Promise<boolean> {
     const user = await this.userRepository.getUserByEmail(email);
-    return user ? true : false;
+    return !!user;
   }
 
   async signup(signupDto: signupDto): Promise<UserEntity> {
