@@ -66,12 +66,8 @@ export class UserController {
   @Get('check-email')
   async checkEmail(@Query(ValidationPipe) query: checkEmailDto, @Res() res) {
     try {
-      if (query.email && typeof query.email === 'string') {
-        const isAvailable = await this.userService.checkEmail(query.email);
-        res.status(200).json({ isAvailable });
-      } else {
-        res.status(400).json({ error: 'Email is required' });
-      }
+      const isAvailable = await this.userService.checkEmail(query.email);
+      res.status(200).json({ isAvailable });
     } catch (error) {
       if (error instanceof Error) {
         res.status(500).json({ error: error.message });
