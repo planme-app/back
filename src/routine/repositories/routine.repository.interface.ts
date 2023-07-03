@@ -1,4 +1,4 @@
-import { Prisma, routine } from '@prisma/client';
+import { Prisma, RoutineType, routine } from '@prisma/client';
 
 export interface RoutineRepository {
   routine(
@@ -17,4 +17,11 @@ export interface RoutineRepository {
     userId: string,
     dayIdx: number,
   ): Promise<routine[]>;
+
+  createRoutine(
+    user_id: string,
+    title: string,
+    type: RoutineType,
+    daysOfWeek: string,
+  ): Promise<routine>;
 }
