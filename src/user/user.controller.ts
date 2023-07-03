@@ -42,13 +42,12 @@ export class UserController {
     try {
       const signInUser = await this.userService.signin(signInDto);
       if (signInUser) {
-        // const accessToken = this.userService.generateToken(signInUser);
         res.status(200).json({
-          // accessToken,
+          accessToken: signInUser.accessToken,
           user: {
-            id: signInUser.user_id,
-            email: signInUser.email,
-            username: signInUser.name,
+            id: signInUser.user.user_id,
+            email: signInUser.user.email,
+            username: signInUser.user.name,
           },
         });
       } else {
