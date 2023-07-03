@@ -7,13 +7,16 @@ import {
   Body,
   HttpException,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { RoutineServiceImpl } from './services/routine.service';
 import { UserIdDTO, DateStringDTO } from './dto/findRoutinesByDate.dto';
 import { CreateRoutineDTO } from './dto/createRoutine.dto';
 import { UserService } from '../user/service/user.service';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api')
+@UseGuards(AuthGuard())
 export class RoutineController {
   constructor(
     private readonly routineService: RoutineServiceImpl,
