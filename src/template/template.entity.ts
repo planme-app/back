@@ -7,3 +7,7 @@ export class TemplateEntity {
   section: string;
   type: RoutineType;
 }
+
+export type TemplateList = {
+  [index: string]: TemplateEntity[];
+};
