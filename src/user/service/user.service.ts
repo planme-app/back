@@ -2,12 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { signupDto } from '../dto/signup.dto';
 import { signinDto } from '../dto/signin.dto';
 import { UserRepository } from '../repository/user.repository';
-import { UserEntity } from '../user.entities';
+import { UserEntity, SigninEntity } from '../user.entities';
 import * as bcrypt from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UserService {
-  constructor(private userRepository: UserRepository) {}
+  constructor(
+    private userRepository: UserRepository,
+    private jwtService: JwtService,
+  ) {}
 
   async checkEmail(email: string): Promise<boolean> {
     const user = await this.userRepository.getUserByEmail(email);
@@ -15,31 +19,27 @@ export class UserService {
   }
 
   async signup(signupDto: signupDto): Promise<UserEntity> {
-    const hashedPassword = await this.encryptPassword(signupDto.passwd);
+    const { email, passwd, name } = signupDto;
+    const hashedPassword = await this.encryptPassword(passwd);
     const createdUser = await this.userRepository.createUser({
-      email: signupDto.email,
-      name: signupDto.name,
+      email: email,
+      name: name,
       passwd: hashedPassword,
     });
     return createdUser;
   }
 
-  async signin(signinDto: signinDto): Promise<UserEntity> {
-    const searchUser = await this.userRepository.getUserByEmail(
-      signinDto.email,
-    );
-    if (!searchUser) {
-      return null;
-    }
+  async signin(signinDto: signinDto): Promise<SigninEntity> {
+    const { email, passwd } = signinDto;
+    const user = await this.userRepository.getUserByEmail(email);
 
-    const isMatchPassword = await this.comparePassword(
-      signinDto.passwd,
-      searchUser.passwd,
-    );
-    if (!isMatchPassword) {
+    if (user && (await this.comparePassword(passwd, user.passwd))) {
+      const payload = { email };
+      const accessToken = this.jwtService.sign(payload);
+      return { accessToken, user };
+    } else {
       return null;
     }
-    return searchUser;
   }
 
   async encryptPassword(password: string): Promise<string> {
