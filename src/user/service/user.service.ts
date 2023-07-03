@@ -3,15 +3,21 @@ import { signupDto } from '../dto/signup.dto';
 import { signinDto } from '../dto/signin.dto';
 import { UserRepository } from '../repository/user.repository';
 import { UserEntity, SigninEntity } from '../user.entity';
+import { UserInstanceService } from './user.interface';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
-export class UserService {
+export class UserService implements UserInstanceService {
   constructor(
     private userRepository: UserRepository,
     private jwtService: JwtService,
   ) {}
+
+  async getUserByUserId(user_id: string): Promise<boolean> {
+    const user = await this.userRepository.user({ user_id });
+    return !!user;
+  }
 
   async checkEmail(email: string): Promise<boolean> {
     const user = await this.userRepository.getUserByEmail(email);

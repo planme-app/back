@@ -1,4 +1,10 @@
-import { Prisma, routine_instance } from '@prisma/client';
+import {
+  Prisma,
+  bool_routine_instance,
+  count_routine_instance,
+  routine_instance,
+  time_routine_instance,
+} from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
 import {
   RoutineInstanceRepository,
@@ -60,5 +66,36 @@ export class RoutineInstanceRepositoryImpl
         bool_routine_instance: true,
       },
     }).then((routine) => routine[0]);
+  }
+
+  createRoutineInstance(routine_id: string): Promise<routine_instance> {
+    return this.prisma.routine_instance.create({ data: { routine_id } });
+  }
+
+  createTimeRoutineInstance(
+    routine_instance_id: string,
+    goal: number,
+  ): Promise<time_routine_instance> {
+    return this.prisma.time_routine_instance.create({
+      data: { routine_instance_id, goal, progress: 0 },
+    });
+  }
+
+  createCountRoutineInstance(
+    routine_instance_id: string,
+    goal: number,
+  ): Promise<count_routine_instance> {
+    return this.prisma.count_routine_instance.create({
+      data: { routine_instance_id, goal, progress: 0 },
+    });
+  }
+
+  createBoolRoutineInstance(
+    routine_instance_id: string,
+    goal: boolean,
+  ): Promise<bool_routine_instance> {
+    return this.prisma.bool_routine_instance.create({
+      data: { routine_instance_id, goal, progress: false },
+    });
   }
 }

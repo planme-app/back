@@ -26,6 +26,6 @@ import { JwtStrategy } from './jwt.strategy';
     PrismaService,
     JwtStrategy,
   ],
-  exports: [JwtStrategy, PassportModule],
+  exports: [JwtStrategy, PassportModule, UserService],
 })
 export class UserModule {}
