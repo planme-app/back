@@ -1,9 +1,11 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { TemplateService } from './service/template.service';
 import { CreateTemplateDto } from './dto/createTemplate.dto';
-import { TemplateEntity } from './template.entity';
+import { TemplateEntity, TemplateList } from './template.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/template')
+@UseGuards(AuthGuard())
 export class TemplateController {
   constructor(private readonly templateService: TemplateService) {}
 
@@ -15,5 +17,10 @@ export class TemplateController {
       createTemplateDto,
     );
     return template;
+  }
+
+  @Get()
+  async findAll(): Promise<TemplateList> {
+    return this.templateService.getTemplate();
   }
 }
