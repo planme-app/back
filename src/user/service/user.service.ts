@@ -4,10 +4,16 @@ import { signinDto } from '../dto/signin.dto';
 import { UserRepository } from '../repository/user.repository';
 import { UserEntity } from '../user.entities';
 import * as bcrypt from 'bcrypt';
+import { UserInstanceService } from './user.interface';
 
 @Injectable()
-export class UserService {
+export class UserService implements UserInstanceService {
   constructor(private userRepository: UserRepository) {}
+
+  async getUserByUserId(user_id: string): Promise<boolean> {
+    const user = await this.userRepository.user({ user_id });
+    return !!user;
+  }
 
   async checkEmail(email: string): Promise<boolean> {
     const user = await this.userRepository.getUserByEmail(email);

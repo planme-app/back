@@ -1,4 +1,4 @@
-import { Prisma, routine } from '@prisma/client';
+import { Prisma, RoutineType, routine } from '@prisma/client';
 import { RoutineRepository } from './routine.repository.interface';
 import { PrismaService } from '../../prisma.service';
 import { Injectable } from '@nestjs/common';
@@ -42,5 +42,22 @@ export class RoutineRepositoryImpl implements RoutineRepository {
       dayIdx + 1
     }, 1) = '1'
   `;
+  }
+
+  createRoutine(
+    user_id: string,
+    title: string,
+    type: RoutineType,
+    daysOfWeek: string,
+  ): Promise<routine> {
+    return this.prisma.routine.create({
+      data: {
+        user_id,
+        title,
+        type,
+        is_repeat: daysOfWeek.length > 0,
+        days_of_week_binary: daysOfWeek,
+      },
+    });
   }
 }

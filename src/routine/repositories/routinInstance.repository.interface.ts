@@ -1,4 +1,10 @@
-import { Prisma, routine_instance } from '@prisma/client';
+import {
+  Prisma,
+  bool_routine_instance,
+  count_routine_instance,
+  routine_instance,
+  time_routine_instance,
+} from '@prisma/client';
 
 export type RoutineInstanceWithIncludes = Prisma.routine_instanceGetPayload<{
   include: {
@@ -26,4 +32,21 @@ export interface RoutineInstanceRepository {
     startOfDay: Date,
     endOfDay: Date,
   ): Promise<RoutineInstanceWithIncludes>;
+
+  createRoutineInstance(routine_id: string): Promise<routine_instance>;
+
+  createTimeRoutineInstance(
+    routine_instance_id: string,
+    goal: number,
+  ): Promise<time_routine_instance>;
+
+  createCountRoutineInstance(
+    routine_instance_id: string,
+    goal: number,
+  ): Promise<count_routine_instance>;
+
+  createBoolRoutineInstance(
+    routine_instance_id: string,
+    goal: boolean,
+  ): Promise<bool_routine_instance>;
 }
