@@ -1,6 +1,6 @@
 import { signupDto } from '../dto/signup.dto';
 import { signinDto } from '../dto/signin.dto';
-import { UserEntity } from '../user.entities';
+import { UserEntity } from '../user.entity';
 
 export interface UserInstanceService {
   checkEmail(email: string): Promise<boolean>;

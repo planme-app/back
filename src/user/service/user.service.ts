@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { signupDto } from '../dto/signup.dto';
 import { signinDto } from '../dto/signin.dto';
 import { UserRepository } from '../repository/user.repository';
-import { UserEntity, SigninEntity } from '../user.entities';
+import { UserEntity, SigninEntity } from '../user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
