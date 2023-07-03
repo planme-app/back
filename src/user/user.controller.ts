@@ -6,15 +6,11 @@ import {
   Res,
   Get,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './service/user.service';
 import { signupDto } from './dto/signup.dto';
 import { signinDto } from './dto/signin.dto';
 import { checkEmailDto } from './dto/checkEmail.dto';
-import { AuthGuard } from '@nestjs/passport';
-import { UserEntity } from './user.entity';
-import { GetUser } from './get-user.decorator';
 
 @Controller('api/user')
 export class UserController {
@@ -78,11 +74,5 @@ export class UserController {
         res.status(500).json({ error: 'An unknown error occurred' });
       }
     }
-  }
-
-  @Post('/test')
-  @UseGuards(AuthGuard())
-  test(@GetUser() user: UserEntity) {
-    console.log('user', user);
   }
 }

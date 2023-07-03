@@ -28,8 +28,8 @@ export class UserService implements UserInstanceService {
     const { email, passwd, name } = signupDto;
     const hashedPassword = await this.encryptPassword(passwd);
     const createdUser = await this.userRepository.createUser({
-      email: email,
-      name: name,
+      email,
+      name,
       passwd: hashedPassword,
     });
     return createdUser;
