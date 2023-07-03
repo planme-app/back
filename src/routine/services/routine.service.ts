@@ -4,7 +4,13 @@ import { RoutineRepositoryImpl } from '../repositories/prisma.routine.repository
 import { RoutineInstanceRepositoryImpl } from '../repositories/prisma.routineInstance.repository';
 import { getDay, parseISO, startOfDay, endOfDay } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
-import { RoutineType, routine } from '@prisma/client';
+import {
+  RoutineType,
+  bool_routine_instance,
+  count_routine_instance,
+  routine,
+  time_routine_instance,
+} from '@prisma/client';
 import { RoutineInstanceWithIncludes } from '../repositories/routinInstance.repository.interface';
 
 @Injectable()
@@ -14,6 +20,78 @@ export class RoutineServiceImpl implements RoutineService {
     private readonly routineRepository: RoutineRepositoryImpl,
     private readonly routineInstanceRepository: RoutineInstanceRepositoryImpl,
   ) {}
+
+  async createRoutine(
+    userId: string,
+    title: string,
+    type: RoutineType,
+    daysOfWeek: string[],
+    goal: string,
+  ) {
+    const newRoutine = await this.routineRepository.createRoutine(
+      userId,
+      title,
+      type,
+      this.convertDaysOfWeekBinary(daysOfWeek),
+    );
+
+    const newRoutineInstance =
+      await this.routineInstanceRepository.createRoutineInstance(
+        newRoutine.routine_id,
+      );
+
+    const newTypeRoutineInstance = await this.createTypeRoutineInstance(
+      type,
+      newRoutineInstance.routine_instance_id,
+      goal,
+    );
+
+    return {
+      routine_instance_id: newRoutineInstance.routine_instance_id,
+      created_at: newRoutineInstance.created_at,
+      title: newRoutine.title,
+      type: newRoutine.type,
+      days_of_week: daysOfWeek,
+      goal: newTypeRoutineInstance.goal,
+      progress: newTypeRoutineInstance.progress,
+    };
+  }
+
+  private createTypeRoutineInstance(
+    type: RoutineType,
+    routine_instance_id: string,
+    goal: string,
+  ): Promise<
+    time_routine_instance | count_routine_instance | bool_routine_instance
+  > {
+    switch (type) {
+      case 'time':
+        return this.routineInstanceRepository.createTimeRoutineInstance(
+          routine_instance_id,
+          Number(goal),
+        );
+
+      case 'count':
+        return this.routineInstanceRepository.createCountRoutineInstance(
+          routine_instance_id,
+          Number(goal),
+        );
+
+      case 'bool':
+        return this.routineInstanceRepository.createBoolRoutineInstance(
+          routine_instance_id,
+          goal === 'true',
+        );
+    }
+  }
+
+  private convertDaysOfWeekBinary(daysOfWeek: string[]): string {
+    return this.day
+      .map((day) =>
+        daysOfWeek.find((inputDay) => inputDay === day) ? '1' : '0',
+      )
+      .join('');
+  }
 
   async findRoutinesByDate(userId: string, date: string) {
     try {
