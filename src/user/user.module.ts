@@ -8,5 +8,6 @@ import { UserEntity } from './user.entities';
 @Module({
   controllers: [UserController],
   providers: [UserService, UserRepository, UserEntity, PrismaService],
+  exports: [UserService],
 })
 export class UserModule {}
