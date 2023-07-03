@@ -25,7 +25,7 @@ export class TemplateService implements TemplateServiceInterface {
   }
 
   async getTemplate(): Promise<TemplateList> {
-    const templates = await this.templateRepository.getTemplate();
+    const templates = await this.templateRepository.templates({});
     const groupedBySection = this.groupBySection(templates);
     return groupedBySection;
   }

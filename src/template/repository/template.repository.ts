@@ -46,8 +46,4 @@ export class TemplateRepository implements templateRepositoryInterface {
       },
     });
   }
-
-  async getTemplate(): Promise<routine_template[]> {
-    return this.prisma.routine_template.findMany();
-  }
 }

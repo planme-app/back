@@ -1,7 +1,7 @@
 import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { TemplateService } from './service/template.service';
 import { CreateTemplateDto } from './dto/createTemplate.dto';
-import { TemplateEntity } from './template.entity';
+import { TemplateEntity, TemplateList } from './template.entity';
 import { AuthGuard } from '@nestjs/passport';
 
 @Controller('api/template')
@@ -20,7 +20,7 @@ export class TemplateController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(): Promise<TemplateList> {
     return this.templateService.getTemplate();
   }
 }

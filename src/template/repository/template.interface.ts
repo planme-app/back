@@ -17,6 +17,4 @@ export interface templateRepositoryInterface {
   createTemplate(
     CreateTemplateDto: CreateTemplateDto,
   ): Promise<routine_template>;
-
-  getTemplate(): Promise<routine_template[]>;
 }
