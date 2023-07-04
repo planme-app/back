@@ -67,4 +67,12 @@ export class TemplateRepository implements templateRepositoryInterface {
       },
     });
   }
+
+  async deleteTemplate(
+    routine_templateWhereUniqueInput: Prisma.routine_templateWhereUniqueInput,
+  ): Promise<routine_template | null> {
+    return this.prisma.routine_template.delete({
+      where: routine_templateWhereUniqueInput,
+    });
+  }
 }

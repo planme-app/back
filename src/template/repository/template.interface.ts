@@ -8,7 +8,7 @@ import {
 export interface templateRepositoryInterface {
   template(
     routine_templateWhereUniqueInput: Prisma.routine_templateWhereUniqueInput,
-  ): Promise<routine_template>;
+  ): Promise<routine_template | null>;
 
   templates(params: {
     skip?: number;
@@ -26,4 +26,8 @@ export interface templateRepositoryInterface {
     routineTemplateIdDTO: RoutineTemplateIdDTO,
     updateTemplateDto: UpdateTemplateDto,
   ): Promise<routine_template>;
+
+  deleteTemplate(
+    routine_templateWhereUniqueInput: Prisma.routine_templateWhereUniqueInput,
+  ): Promise<routine_template | null>;
 }

@@ -6,6 +6,7 @@ import {
   UseGuards,
   Put,
   Param,
+  Delete,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TemplateService } from './service/template.service';
@@ -54,6 +55,16 @@ export class TemplateController {
     const template = await this.templateService.updateTemplate(
       routineTemplateIdDTO,
       updateTemplateDto,
+    );
+    return template;
+  }
+
+  @Delete()
+  async delete(
+    @Body() routineTemplateIdDTO: RoutineTemplateIdDTO,
+  ): Promise<TemplateEntity> {
+    const template = await this.templateService.deleteTemplate(
+      routineTemplateIdDTO,
     );
     return template;
   }

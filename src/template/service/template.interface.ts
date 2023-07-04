@@ -15,4 +15,7 @@ export interface TemplateServiceInterface {
     routineTemplateIdDTO: RoutineTemplateIdDTO,
     updateTemplateDto: UpdateTemplateDto,
   ): Promise<TemplateEntity>;
+  deleteTemplate(
+    routineTemplateIdDTO: RoutineTemplateIdDTO,
+  ): Promise<TemplateEntity>;
 }
