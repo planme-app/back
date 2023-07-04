@@ -1,19 +1,23 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTemplateDto } from '../dto/createTemplate.dto';
+import { routine_template } from '@prisma/client';
 import { TemplateRepository } from '../repository/template.repository';
 import { TemplateEntity, TemplateList } from '../template.entity';
 import { TemplateServiceInterface } from './template.interface';
-import { routine_template } from '@prisma/client';
+import {
+  UpdateTemplateDto,
+  RoutineTemplateIdDTO,
+} from '../dto/updateTemplate.dto';
+import { CreateTemplateDto } from '../dto/createTemplate.dto';
 
 @Injectable()
 export class TemplateService implements TemplateServiceInterface {
   constructor(private templateRepository: TemplateRepository) {}
 
   async createTemplate(
-    createTemplateDto: CreateTemplateDto,
+    CreateTemplateDto: CreateTemplateDto,
   ): Promise<TemplateEntity> {
     const { routine_template_id, title, logo_url, section, type } =
-      await this.templateRepository.createTemplate(createTemplateDto);
+      await this.templateRepository.createTemplate(CreateTemplateDto);
 
     return {
       routineTemplateId: routine_template_id,
@@ -56,5 +60,24 @@ export class TemplateService implements TemplateServiceInterface {
       return groupTemplate;
     }, init);
     return result;
+  }
+
+  async updateTemplate(
+    routineTemplateIdDTO: RoutineTemplateIdDTO,
+    updateTemplateDto: UpdateTemplateDto,
+  ): Promise<TemplateEntity> {
+    const { routine_template_id, title, logo_url, section, type } =
+      await this.templateRepository.updateTemplate(
+        routineTemplateIdDTO,
+        updateTemplateDto,
+      );
+
+    return {
+      routineTemplateId: routine_template_id,
+      title,
+      logoUrl: logo_url,
+      section,
+      type,
+    };
   }
 }

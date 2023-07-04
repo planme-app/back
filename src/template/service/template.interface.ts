@@ -1,7 +1,15 @@
 import { CreateTemplateDto } from '../dto/createTemplate.dto';
+import {
+  UpdateTemplateDto,
+  RoutineTemplateIdDTO,
+} from '../dto/updateTemplate.dto';
 import { TemplateEntity, TemplateList } from '../template.entity';
 
 export interface TemplateServiceInterface {
-  createTemplate(createTemplateDto: CreateTemplateDto): Promise<TemplateEntity>;
   getTemplate(): Promise<TemplateList>;
+  createTemplate(createTemplateDto: CreateTemplateDto): Promise<TemplateEntity>;
+  updateTemplate(
+    routineTemplateIdDTO: RoutineTemplateIdDTO,
+    updateTemplateDto: UpdateTemplateDto,
+  ): Promise<TemplateEntity>;
 }
