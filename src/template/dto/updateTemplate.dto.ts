@@ -9,6 +9,10 @@ import {
 
 export class UpdateTemplateDto {
   @IsString()
+  @IsNotEmpty()
+  routineTemplateId: string;
+
+  @IsString()
   @MinLength(1)
   @MaxLength(8)
   title: string;
@@ -24,10 +28,4 @@ export class UpdateTemplateDto {
   @IsString()
   @IsEnum(RoutineType)
   type: RoutineType;
-}
-
-export class RoutineTemplateIdDTO {
-  @IsString()
-  @IsNotEmpty()
-  routineTemplateId: string;
 }

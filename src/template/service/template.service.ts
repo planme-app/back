@@ -1,12 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { routine_template } from '@prisma/client';
 import { TemplateRepository } from '../repository/template.repository';
 import { TemplateEntity, TemplateList } from '../template.entity';
 import { TemplateServiceInterface } from './template.interface';
-import {
-  UpdateTemplateDto,
-  RoutineTemplateIdDTO,
-} from '../dto/updateTemplate.dto';
+import { UpdateTemplateDto } from '../dto/updateTemplate.dto';
 import { CreateTemplateDto } from '../dto/createTemplate.dto';
 
 @Injectable()
@@ -63,14 +60,20 @@ export class TemplateService implements TemplateServiceInterface {
   }
 
   async updateTemplate(
-    routineTemplateIdDTO: RoutineTemplateIdDTO,
     updateTemplateDto: UpdateTemplateDto,
   ): Promise<TemplateEntity> {
-    const { routine_template_id, title, logo_url, section, type } =
-      await this.templateRepository.updateTemplate(
-        routineTemplateIdDTO,
-        updateTemplateDto,
+    const foundTemplate = await this.templateRepository.template({
+      routine_template_id: updateTemplateDto.routineTemplateId,
+    });
+
+    if (!foundTemplate) {
+      throw new NotFoundException(
+        `Can't find template with id ${updateTemplateDto.routineTemplateId}`,
       );
+    }
+
+    const { routine_template_id, title, logo_url, section, type } =
+      await this.templateRepository.updateTemplate(updateTemplateDto);
 
     return {
       routineTemplateId: routine_template_id,
