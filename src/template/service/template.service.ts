@@ -34,6 +34,23 @@ export class TemplateService implements TemplateServiceInterface {
     return groupedBySection;
   }
 
+  async getTemplateById(
+    routineTemplateIdDTO: RoutineTemplateIdDTO,
+  ): Promise<TemplateEntity> {
+    const { routineTemplateId } = routineTemplateIdDTO;
+    const { routine_template_id, title, logo_url, section, type } =
+      await this.templateRepository.template({
+        routine_template_id: routineTemplateId,
+      });
+    return {
+      routineTemplateId: routine_template_id,
+      title,
+      logoUrl: logo_url,
+      section,
+      type,
+    };
+  }
+
   groupBySection(templates: routine_template[]) {
     const init: { [index: string]: TemplateEntity[] } = {};
     const result = templates.reduce((groupTemplate, template) => {

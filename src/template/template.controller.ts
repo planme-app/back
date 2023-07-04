@@ -36,6 +36,16 @@ export class TemplateController {
     return this.templateService.getTemplate();
   }
 
+  @Get('/:routineTemplateId')
+  async findById(
+    @Param() routineTemplateIdDTO: RoutineTemplateIdDTO,
+  ): Promise<TemplateEntity> {
+    const template = await this.templateService.getTemplateById(
+      routineTemplateIdDTO,
+    );
+    return template;
+  }
+
   @Put('/:routineTemplateId')
   async update(
     @Body() updateTemplateDto: UpdateTemplateDto,
