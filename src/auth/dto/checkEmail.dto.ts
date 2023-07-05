@@ -1,6 +1,6 @@
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
-export class checkEmailDto {
+export class CheckEmailDto {
   @IsString()
   @MinLength(4)
   @MaxLength(20)

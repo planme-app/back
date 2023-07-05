@@ -1,18 +1,36 @@
-import { Injectable } from '@nestjs/common';
-import { signupDto } from '../dto/signup.dto';
-import { signinDto } from '../dto/signin.dto';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserEntity } from '../user.entity';
 import { UserRepository } from '../repository/user.repository';
-import { UserEntity, SigninEntity } from '../user.entity';
-import { UserInstanceService } from './user.interface';
 import * as bcrypt from 'bcrypt';
-import { JwtService } from '@nestjs/jwt';
+import { UserServiceInstance } from './user.interface';
 
 @Injectable()
-export class UserService implements UserInstanceService {
-  constructor(
-    private userRepository: UserRepository,
-    private jwtService: JwtService,
-  ) {}
+export class UserService implements UserServiceInstance {
+  constructor(private userRepository: UserRepository) {}
+
+  async create(createUserDto: CreateUserDto): Promise<UserEntity> {
+    const { email, passwd, name } = createUserDto;
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(passwd, saltRounds);
+    const user = await this.userRepository.create({
+      email,
+      name,
+      passwd: hashedPassword,
+    });
+    return user;
+  }
+
+  async findAll(): Promise<UserEntity[]> {
+    const users = await this.userRepository.users({});
+    return users;
+  }
+
+  async findOne(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.user({ user_id: id });
+    return user;
+  }
 
   async getUserByUserId(user_id: string): Promise<boolean> {
     const user = await this.userRepository.user({ user_id });
@@ -20,49 +38,31 @@ export class UserService implements UserInstanceService {
   }
 
   async checkEmail(email: string): Promise<boolean> {
-    const user = await this.userRepository.getUserByEmail(email);
+    const user = await this.userRepository.user({ email });
     return !!user;
   }
 
-  async signup(signupDto: signupDto): Promise<UserEntity> {
-    const { email, passwd, name } = signupDto;
-    const hashedPassword = await this.encryptPassword(passwd);
-    const createdUser = await this.userRepository.createUser({
-      email,
-      name,
-      passwd: hashedPassword,
-    });
-    return createdUser;
-  }
+  async update(updateUserDto: UpdateUserDto): Promise<UserEntity> {
+    const { userId } = updateUserDto;
 
-  async signin(signinDto: signinDto): Promise<SigninEntity> {
-    const { email, passwd } = signinDto;
-    const user = await this.userRepository.getUserByEmail(email);
+    const user = await this.userRepository.user({ user_id: userId });
 
-    if (user && (await this.comparePassword(passwd, user.passwd))) {
-      const payload = { email };
-      const accessToken = this.jwtService.sign(payload);
-      return { accessToken, user };
-    } else {
-      return null;
+    if (!user) {
+      throw new NotFoundException(`Can't find user with id ${userId}`);
     }
+
+    const newUser = await this.userRepository.update(updateUserDto);
+
+    return newUser;
   }
 
-  async encryptPassword(password: string): Promise<string> {
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-    return hashedPassword;
-  }
+  async remove(id: string): Promise<UserEntity> {
+    const user = await this.userRepository.user({ user_id: id });
 
-  async comparePassword(
-    plainTextPassword: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    const isPasswordMatch = await bcrypt.compare(
-      plainTextPassword,
-      hashedPassword,
-    );
+    if (!user) {
+      throw new NotFoundException(`Can't find user with id ${id}`);
+    }
 
-    return isPasswordMatch;
+    return await this.userRepository.remove(id);
   }
 }

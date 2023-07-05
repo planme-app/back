@@ -1,78 +1,42 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
-  ValidationPipe,
-  Res,
-  Get,
-  Query,
+  Param,
+  Delete,
+  Put,
 } from '@nestjs/common';
 import { UserService } from './service/user.service';
-import { signupDto } from './dto/signup.dto';
-import { signinDto } from './dto/signin.dto';
-import { checkEmailDto } from './dto/checkEmail.dto';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('api/user')
 export class UserController {
-  constructor(private userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
-  @Post('signup')
-  async signup(@Body(ValidationPipe) signupDto: signupDto, @Res() res) {
-    try {
-      const isExistingEmail = await this.userService.checkEmail(
-        signupDto.email,
-      );
-      if (!isExistingEmail) {
-        const newUser = this.userService.signup(signupDto);
-        res.status(201).json({ user: newUser });
-      } else {
-        res.status(409).json({ error: 'User with this email already exists' });
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'An unknown error occurred' });
-      }
-    }
+  @Post()
+  create(@Body() createUserDto: CreateUserDto) {
+    return this.userService.create(createUserDto);
   }
 
-  @Post('signin')
-  async signin(@Body(ValidationPipe) signInDto: signinDto, @Res() res) {
-    try {
-      const signInUser = await this.userService.signin(signInDto);
-      if (signInUser) {
-        res.status(200).json({
-          accessToken: signInUser.accessToken,
-          user: {
-            id: signInUser.user.user_id,
-            email: signInUser.user.email,
-            username: signInUser.user.name,
-          },
-        });
-      } else {
-        res.status(401).json({ error: 'Invalid email or password' });
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'An unknown error occurred' });
-      }
-    }
+  @Get()
+  findAll() {
+    return this.userService.findAll();
   }
 
-  @Get('check-email')
-  async checkEmail(@Query(ValidationPipe) query: checkEmailDto, @Res() res) {
-    try {
-      const isAvailable = await this.userService.checkEmail(query.email);
-      res.status(200).json({ isAvailable });
-    } catch (error) {
-      if (error instanceof Error) {
-        res.status(500).json({ error: error.message });
-      } else {
-        res.status(500).json({ error: 'An unknown error occurred' });
-      }
-    }
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.userService.findOne(id);
+  }
+
+  @Put()
+  update(@Body() updateUserDto: UpdateUserDto) {
+    return this.userService.update(updateUserDto);
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.userService.remove(id);
   }
 }
