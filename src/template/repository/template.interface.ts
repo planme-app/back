@@ -1,5 +1,6 @@
 import { Prisma, routine_template } from '@prisma/client';
 import { CreateTemplateDto } from '../dto/createTemplate.dto';
+import { UpdateTemplateDto } from '../dto/updateTemplate.dto';
 
 export interface templateRepositoryInterface {
   template(
@@ -15,6 +16,10 @@ export interface templateRepositoryInterface {
   }): Promise<routine_template[]>;
 
   createTemplate(
-    CreateTemplateDto: CreateTemplateDto,
+    createTemplateDto: CreateTemplateDto,
+  ): Promise<routine_template>;
+
+  updateTemplate(
+    updateTemplateDto: UpdateTemplateDto,
   ): Promise<routine_template>;
 }

@@ -1,8 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, routine_template } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
-import { CreateTemplateDto } from '../dto/createTemplate.dto';
 import { templateRepositoryInterface } from './template.interface';
+import { CreateTemplateDto } from '../dto/createTemplate.dto';
+import { UpdateTemplateDto } from '../dto/updateTemplate.dto';
 
 @Injectable()
 export class TemplateRepository implements templateRepositoryInterface {
@@ -34,10 +35,26 @@ export class TemplateRepository implements templateRepositoryInterface {
   }
 
   async createTemplate(
-    CreateTemplateDto: CreateTemplateDto,
+    createTemplateDto: CreateTemplateDto,
   ): Promise<routine_template> {
-    const { title, logoUrl, section, type } = CreateTemplateDto;
+    const { title, logoUrl, section, type } = createTemplateDto;
     return this.prisma.routine_template.create({
+      data: {
+        title,
+        logo_url: logoUrl,
+        section,
+        type,
+      },
+    });
+  }
+
+  async updateTemplate(
+    updateTemplateDto: UpdateTemplateDto,
+  ): Promise<routine_template> {
+    const { routineTemplateId, title, logoUrl, section, type } =
+      updateTemplateDto;
+    return this.prisma.routine_template.update({
+      where: { routine_template_id: routineTemplateId },
       data: {
         title,
         logo_url: logoUrl,
