@@ -1,9 +1,13 @@
-import { signupDto } from '../dto/signup.dto';
-import { signinDto } from '../dto/signin.dto';
-import { SigninEntity, UserEntity } from '../user.entity';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserEntity } from '../user.entity';
 
-export interface UserInstanceService {
+export interface UserServiceInstance {
+  create(createUserDto: CreateUserDto): Promise<UserEntity>;
+  findAll(): Promise<UserEntity[]>;
+  findOne(id: string): Promise<UserEntity>;
+  getUserByUserId(user_id: string): Promise<boolean>;
   checkEmail(email: string): Promise<boolean>;
-  signup(signupDto: signupDto): Promise<UserEntity>;
-  signin(signinDto: signinDto): Promise<SigninEntity>;
+  update(updateUserDto: UpdateUserDto): Promise<UserEntity>;
+  remove(id: string): Promise<UserEntity>;
 }

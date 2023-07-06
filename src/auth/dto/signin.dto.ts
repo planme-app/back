@@ -1,6 +1,6 @@
 import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
-export class signupDto {
+export class SigninDto {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
@@ -20,12 +20,4 @@ export class signupDto {
     message: 'password only accepts english, number, special characters',
   })
   passwd: string;
-
-  @IsString()
-  @MinLength(2)
-  @MaxLength(6)
-  @Matches(/^[가-힣]{2,6}$/, {
-    message: '',
-  })
-  name: string;
 }

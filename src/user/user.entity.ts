@@ -7,8 +7,3 @@ export class UserEntity implements user {
   name: string;
   created_at: Date;
 }
-
-export class SigninEntity {
-  accessToken: string;
-  user: UserEntity;
-}

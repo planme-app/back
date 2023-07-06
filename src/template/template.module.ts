@@ -3,10 +3,10 @@ import { TemplateService } from './service/template.service';
 import { TemplateController } from './template.controller';
 import { PrismaService } from 'src/prisma.service';
 import { TemplateRepository } from './repository/template.repository';
-import { UserModule } from 'src/user/user.module';
+import { AuthModule } from 'src/auth/auth.module';
 
 @Module({
-  imports: [UserModule],
+  imports: [AuthModule],
   controllers: [TemplateController],
   providers: [TemplateService, TemplateRepository, PrismaService],
 })
