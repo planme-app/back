@@ -13,6 +13,7 @@ import { TemplateService } from './service/template.service';
 import { TemplateEntity, TemplateList } from './template.entity';
 import { CreateTemplateDto } from './dto/createTemplate.dto';
 import { UpdateTemplateDto } from './dto/updateTemplate.dto';
+import { RoutineTemplateIdDto } from './dto/routineTemplateId.dto';
 
 @Controller('api/template')
 @UseGuards(AuthGuard())
@@ -36,10 +37,10 @@ export class TemplateController {
 
   @Get('/:routineTemplateId')
   async findById(
-    @Param() routineTemplateIdDTO: RoutineTemplateIdDTO,
+    @Param() routineTemplateIdDto: RoutineTemplateIdDto,
   ): Promise<TemplateEntity> {
     const template = await this.templateService.getTemplateById(
-      routineTemplateIdDTO,
+      routineTemplateIdDto,
     );
     return template;
   }
@@ -56,10 +57,10 @@ export class TemplateController {
 
   @Delete()
   async delete(
-    @Body() routineTemplateIdDTO: RoutineTemplateIdDTO,
+    @Body() routineTemplateIdDto: RoutineTemplateIdDto,
   ): Promise<TemplateEntity> {
     const template = await this.templateService.deleteTemplate(
-      routineTemplateIdDTO,
+      routineTemplateIdDto,
     );
     return template;
   }
