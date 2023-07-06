@@ -1,20 +1,9 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  UseGuards,
-  Put,
-  Param,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards, Put } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TemplateService } from './service/template.service';
 import { TemplateEntity, TemplateList } from './template.entity';
 import { CreateTemplateDto } from './dto/createTemplate.dto';
-import {
-  RoutineTemplateIdDTO,
-  UpdateTemplateDto,
-} from './dto/updateTemplate.dto';
+import { UpdateTemplateDto } from './dto/updateTemplate.dto';
 
 @Controller('api/template')
 @UseGuards(AuthGuard())
@@ -46,13 +35,11 @@ export class TemplateController {
     return template;
   }
 
-  @Put('/:routineTemplateId')
+  @Put()
   async update(
     @Body() updateTemplateDto: UpdateTemplateDto,
-    @Param() routineTemplateIdDTO: RoutineTemplateIdDTO,
   ): Promise<TemplateEntity> {
     const template = await this.templateService.updateTemplate(
-      routineTemplateIdDTO,
       updateTemplateDto,
     );
     return template;
