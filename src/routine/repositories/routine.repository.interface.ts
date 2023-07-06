@@ -24,4 +24,10 @@ export interface RoutineRepository {
     type: RoutineType,
     daysOfWeek: string,
   ): Promise<routine>;
+
+  updateRoutine(
+    routine_id: string,
+    title: string,
+    days_of_week_binary: string,
+  ): Promise<routine>;
 }

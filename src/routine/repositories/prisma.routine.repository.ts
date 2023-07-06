@@ -60,4 +60,15 @@ export class RoutineRepositoryImpl implements RoutineRepository {
       },
     });
   }
+
+  updateRoutine(
+    routine_id: string,
+    title: string,
+    days_of_week_binary: string,
+  ): Promise<routine> {
+    return this.prisma.routine.update({
+      where: { routine_id },
+      data: { title, days_of_week_binary },
+    });
+  }
 }
