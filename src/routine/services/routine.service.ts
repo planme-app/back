@@ -21,6 +21,64 @@ export class RoutineServiceImpl implements RoutineService {
     private readonly routineInstanceRepository: RoutineInstanceRepositoryImpl,
   ) {}
 
+  async findRoutineById(routine_id: string): Promise<boolean> {
+    const routine = await this.routineRepository.routine({ routine_id });
+    return !!routine;
+  }
+
+  async editRoutine(
+    routine_id: string,
+    title: string,
+    daysOfWeek: string[],
+    goal: string,
+    dateStr: string,
+  ) {
+    // 1. 루틴 아이디로 루틴 찾아서 업데이트
+    const routine = await this.routineRepository.updateRoutine(
+      routine_id,
+      title,
+      this.convertDaysOfWeekBinary(daysOfWeek),
+    );
+    const type = routine.type;
+    // 2. date 이후에 해당하는 루틴 인스턴스 찾기
+    const start = startOfDay(utcToZonedTime(parseISO(dateStr), 'Asia/Seoul'));
+    const routineInstances = await this.routineInstanceRepository.routines({
+      where: {
+        AND: {
+          routine_id: routine_id,
+          created_at: {
+            gte: start,
+          },
+        },
+      },
+      include: {
+        count_routine_instance: type === 'count',
+        time_routine_instance: type === 'time',
+        bool_routine_instance: type === 'bool',
+      },
+    });
+    // 3. date 이후에 해당하는 type 루틴 인스턴스 변경
+
+    routineInstances.forEach((routineInstance) => {
+      let type_routine_instance_id: string;
+      if (type === 'time') {
+        // 이 시점에 알수있는것: routine_instance_id
+        type_routine_instance_id =
+          routineInstance.time_routine_instance[0].time_routine_instance_id;
+      } else if (type === 'count') {
+        type_routine_instance_id =
+          routineInstance.count_routine_instance[0].count_routine_instance_id;
+      } else {
+        type_routine_instance_id =
+          routineInstance.bool_routine_instance[0].bool_routine_instance_id;
+      }
+
+      this.updateTypeRoutineInstance(type, type_routine_instance_id, goal);
+    });
+
+    return true;
+  }
+
   async createRoutine(
     userId: string,
     title: string,
@@ -85,6 +143,34 @@ export class RoutineServiceImpl implements RoutineService {
     }
   }
 
+  private updateTypeRoutineInstance(
+    type: RoutineType,
+    type_routine_instance_id: string,
+    goal: string,
+  ): Promise<
+    time_routine_instance | count_routine_instance | bool_routine_instance
+  > {
+    switch (type) {
+      case 'time':
+        return this.routineInstanceRepository.updateTimeRoutineInstance(
+          type_routine_instance_id,
+          Number(goal),
+        );
+
+      case 'count':
+        return this.routineInstanceRepository.updateCountRoutineInstance(
+          type_routine_instance_id,
+          Number(goal),
+        );
+
+      case 'bool':
+        return this.routineInstanceRepository.updateBoolRoutineInstance(
+          type_routine_instance_id,
+          goal === 'true',
+        );
+    }
+  }
+
   private convertDaysOfWeekBinary(daysOfWeek: string[]): string {
     return this.day
       .map((day) =>
@@ -105,7 +191,10 @@ export class RoutineServiceImpl implements RoutineService {
         date,
       );
 
-      return await Promise.all(promiseRoutineInstances);
+      return (await Promise.all(promiseRoutineInstances)).filter(
+        // batch 서비스 만들기 전에 생성된 routine때문에 넣어둠
+        (routineInstance) => routineInstance !== null,
+      );
     } catch (error) {
       console.error(error);
     }
@@ -163,6 +252,9 @@ export class RoutineServiceImpl implements RoutineService {
           start,
           end,
         );
+      if (routineInstanceWithGoal === undefined) {
+        return null;
+      }
 
       const { goal, progress } = this.getGoalandProgress(
         routine.type,
