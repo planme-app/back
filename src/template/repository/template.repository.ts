@@ -3,10 +3,7 @@ import { Prisma, routine_template } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 import { templateRepositoryInterface } from './template.interface';
 import { CreateTemplateDto } from '../dto/createTemplate.dto';
-import {
-  UpdateTemplateDto,
-  RoutineTemplateIdDTO,
-} from '../dto/updateTemplate.dto';
+import { UpdateTemplateDto } from '../dto/updateTemplate.dto';
 
 @Injectable()
 export class TemplateRepository implements templateRepositoryInterface {
@@ -52,11 +49,10 @@ export class TemplateRepository implements templateRepositoryInterface {
   }
 
   async updateTemplate(
-    routineTemplateIdDTO: RoutineTemplateIdDTO,
     updateTemplateDto: UpdateTemplateDto,
   ): Promise<routine_template> {
-    const { title, logoUrl, section, type } = updateTemplateDto;
-    const { routineTemplateId } = routineTemplateIdDTO;
+    const { routineTemplateId, title, logoUrl, section, type } =
+      updateTemplateDto;
     return this.prisma.routine_template.update({
       where: { routine_template_id: routineTemplateId },
       data: {
