@@ -8,5 +8,8 @@ export interface TemplateServiceInterface {
     routineTemplateIdDTO: RoutineTemplateIdDTO,
   ): Promise<TemplateEntity>;
   createTemplate(createTemplateDto: CreateTemplateDto): Promise<TemplateEntity>;
+  deleteTemplate(
+    routineTemplateIdDTO: RoutineTemplateIdDTO,
+  ): Promise<TemplateEntity>;
   updateTemplate(updateTemplateDto: UpdateTemplateDto): Promise<TemplateEntity>;
 }

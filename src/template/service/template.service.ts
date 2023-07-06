@@ -100,4 +100,32 @@ export class TemplateService implements TemplateServiceInterface {
       type,
     };
   }
+
+  async deleteTemplate(
+    routineTemplateIdDTO: RoutineTemplateIdDTO,
+  ): Promise<TemplateEntity> {
+    const { routineTemplateId } = routineTemplateIdDTO;
+    const foundTemplate = await this.templateRepository.template({
+      routine_template_id: routineTemplateId,
+    });
+
+    if (!foundTemplate) {
+      throw new NotFoundException(
+        `Can't find Board with id ${routineTemplateId}`,
+      );
+    }
+
+    const { routine_template_id, title, logo_url, section, type } =
+      await this.templateRepository.deleteTemplate({
+        routine_template_id: routineTemplateId,
+      });
+
+    return {
+      routineTemplateId: routine_template_id,
+      title,
+      logoUrl: logo_url,
+      section,
+      type,
+    };
+  }
 }

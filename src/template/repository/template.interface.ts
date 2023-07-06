@@ -5,7 +5,7 @@ import { UpdateTemplateDto } from '../dto/updateTemplate.dto';
 export interface templateRepositoryInterface {
   template(
     routine_templateWhereUniqueInput: Prisma.routine_templateWhereUniqueInput,
-  ): Promise<routine_template>;
+  ): Promise<routine_template | null>;
 
   templates(params: {
     skip?: number;
@@ -22,4 +22,8 @@ export interface templateRepositoryInterface {
   updateTemplate(
     updateTemplateDto: UpdateTemplateDto,
   ): Promise<routine_template>;
+
+  deleteTemplate(
+    routine_templateWhereUniqueInput: Prisma.routine_templateWhereUniqueInput,
+  ): Promise<routine_template | null>;
 }
