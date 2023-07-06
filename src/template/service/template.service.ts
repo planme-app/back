@@ -5,6 +5,7 @@ import { TemplateEntity, TemplateList } from '../template.entity';
 import { TemplateServiceInterface } from './template.interface';
 import { UpdateTemplateDto } from '../dto/updateTemplate.dto';
 import { CreateTemplateDto } from '../dto/createTemplate.dto';
+import { RoutineTemplateIdDto } from '../dto/routineTemplateId.dto';
 
 @Injectable()
 export class TemplateService implements TemplateServiceInterface {
@@ -32,9 +33,9 @@ export class TemplateService implements TemplateServiceInterface {
   }
 
   async getTemplateById(
-    routineTemplateIdDTO: RoutineTemplateIdDTO,
+    routineTemplateIdDto: RoutineTemplateIdDto,
   ): Promise<TemplateEntity> {
-    const { routineTemplateId } = routineTemplateIdDTO;
+    const { routineTemplateId } = routineTemplateIdDto;
     const { routine_template_id, title, logo_url, section, type } =
       await this.templateRepository.template({
         routine_template_id: routineTemplateId,
@@ -102,9 +103,9 @@ export class TemplateService implements TemplateServiceInterface {
   }
 
   async deleteTemplate(
-    routineTemplateIdDTO: RoutineTemplateIdDTO,
+    routineTemplateIdDto: RoutineTemplateIdDto,
   ): Promise<TemplateEntity> {
-    const { routineTemplateId } = routineTemplateIdDTO;
+    const { routineTemplateId } = routineTemplateIdDto;
     const foundTemplate = await this.templateRepository.template({
       routine_template_id: routineTemplateId,
     });
