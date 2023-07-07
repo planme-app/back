@@ -160,7 +160,7 @@ export class RoutineController {
 
     try {
       await this.routineService.deleteRoutine(paramDTO.routineId);
-      return res.status(HttpStatus.NO_CONTENT).send;
+      return res.status(HttpStatus.NO_CONTENT).send();
     } catch (error) {
       throw new HttpException(
         {

@@ -10,7 +10,7 @@ import { SignupDto } from './dto/signup.dto';
 import { SigninDto } from './dto/signin.dto';
 import { CheckEmailDto } from '../auth/dto/checkEmail.dto';
 import { AuthService } from './service/auth.service';
-import { UserService } from 'src/user/service/user.service';
+import { UserService } from '../user/service/user.service';
 
 @Controller('api/auth')
 export class AuthController {

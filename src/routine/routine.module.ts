@@ -5,8 +5,8 @@ import { RoutineRepositoryImpl } from './repositories/prisma.routine.repository'
 import { RoutineEntity } from './routine.entity';
 import { PrismaService } from '../prisma.service';
 import { RoutineInstanceRepositoryImpl } from './repositories/prisma.routineInstance.repository';
-import { AuthModule } from 'src/auth/auth.module';
-import { UserModule } from 'src/user/user.module';
+import { AuthModule } from '../auth/auth.module';
+import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [AuthModule, UserModule],
