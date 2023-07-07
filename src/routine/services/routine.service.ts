@@ -200,6 +200,10 @@ export class RoutineServiceImpl implements RoutineService {
     }
   }
 
+  async deleteRoutine(routineId: string): Promise<void> {
+    this.routineRepository.deleteRoutine(routineId);
+  }
+
   private getKorDay(dateStr: string) {
     const koreaTime = utcToZonedTime(parseISO(dateStr), 'Asia/Seoul');
     return getDay(koreaTime);
