@@ -115,7 +115,7 @@ export class RoutineServiceImpl implements RoutineService {
     };
   }
 
-  private createTypeRoutineInstance(
+  createTypeRoutineInstance(
     type: RoutineType,
     routine_instance_id: string,
     goal: string,
