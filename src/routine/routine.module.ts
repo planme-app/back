@@ -18,5 +18,10 @@ import { UserModule } from '../user/user.module';
     RoutineEntity,
     PrismaService,
   ],
+  exports: [
+    RoutineRepositoryImpl,
+    RoutineInstanceRepositoryImpl,
+    RoutineServiceImpl,
+  ],
 })
 export class RoutineModule {}
