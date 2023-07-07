@@ -71,4 +71,11 @@ export class RoutineRepositoryImpl implements RoutineRepository {
       data: { title, days_of_week_binary },
     });
   }
+
+  deleteRoutine(routine_id: string): Promise<routine> {
+    return this.prisma.routine.update({
+      where: { routine_id },
+      data: { deleted_at: new Date() },
+    });
+  }
 }
