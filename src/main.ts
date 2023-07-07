@@ -10,6 +10,11 @@ async function bootstrap() {
 
   const prismaService = app.get(PrismaService);
   await prismaService.enableShutdownHooks(app);
-  await app.listen(3000);
+  const acao = { origin: ['https://www.planmeapp.com'] };
+  if (process.env.IS_DEV) {
+    acao.origin.push('http://localhost:3000');
+  }
+  app.enableCors(acao);
+  await app.listen(4000);
 }
 bootstrap();
