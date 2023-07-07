@@ -60,12 +60,23 @@ export class RoutineInstanceRepositoryImpl
           },
         },
       },
+      orderBy: {
+        created_at: 'desc',
+      },
       include: {
         count_routine_instance: true,
         time_routine_instance: true,
         bool_routine_instance: true,
       },
-    }).then((routine) => routine[0]);
+    }).then(
+      (routines) =>
+        routines.filter(
+          (routine) =>
+            routine.bool_routine_instance.length > 0 ||
+            routine.count_routine_instance.length > 0 ||
+            routine.time_routine_instance.length > 0,
+        )[0],
+    );
   }
 
   createRoutineInstance(routine_id: string): Promise<routine_instance> {
