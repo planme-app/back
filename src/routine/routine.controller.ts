@@ -10,6 +10,7 @@ import {
   UseGuards,
   Put,
   Res,
+  Delete,
 } from '@nestjs/common';
 import { RoutineServiceImpl } from './services/routine.service';
 import { UserIdDTO, DateStringDTO } from './dto/findRoutinesByDate.dto';
@@ -18,6 +19,7 @@ import { UserService } from '../user/service/user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { EditRoutineDTO, EditRoutineParamDTO } from './dto/editRoutine.dto';
 import { Response } from 'express';
+import { DeleteRoutineParamDTO } from './dto/deleteRoutine.dto';
 
 @Controller('api')
 @UseGuards(AuthGuard())
@@ -119,6 +121,51 @@ export class RoutineController {
         {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
           error: 'An error occurred while editing the routine.',
+        },
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  @Delete('user/:userId/routine/:routineId')
+  async deleteRoutine(
+    @Param() paramDTO: DeleteRoutineParamDTO,
+    @Res() res: Response,
+  ) {
+    const hasUser = await this.userService.getUserByUserId(paramDTO.userId);
+
+    if (!hasUser) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'User with provided ID not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const hasRoutine = await this.routineService.findRoutineById(
+      paramDTO.routineId,
+    );
+
+    if (!hasRoutine) {
+      throw new HttpException(
+        {
+          status: HttpStatus.NOT_FOUND,
+          error: 'Routine with provided ID not found',
+        },
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    try {
+      await this.routineService.deleteRoutine(paramDTO.routineId);
+      return res.status(HttpStatus.NO_CONTENT).send;
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: HttpStatus.INTERNAL_SERVER_ERROR,
+          error: 'An error occurred while deleting the routine.',
         },
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
