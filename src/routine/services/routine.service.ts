@@ -200,8 +200,9 @@ export class RoutineServiceImpl implements RoutineService {
     }
   }
 
-  async deleteRoutine(routineId: string): Promise<void> {
-    this.routineRepository.deleteRoutine(routineId);
+  async deleteRoutine(routineId: string): Promise<routine> {
+    const routine = await this.routineRepository.deleteRoutine(routineId);
+    return routine;
   }
 
   private getKorDay(dateStr: string) {
