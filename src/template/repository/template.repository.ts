@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma, routine_template } from '@prisma/client';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../../prisma.service';
 import { templateRepositoryInterface } from './template.interface';
 import { CreateTemplateDto } from '../dto/createTemplate.dto';
 import { UpdateTemplateDto } from '../dto/updateTemplate.dto';

@@ -38,9 +38,9 @@ export class RoutineRepositoryImpl implements RoutineRepository {
     return this.prisma.$queryRaw`
       SELECT *
       FROM routine
-      WHERE user_id = ${userId} AND SUBSTRING(days_of_week_binary, ${
-      dayIdx + 1
-    }, 1) = '1'
+      WHERE user_id = ${userId}
+      AND SUBSTRING(days_of_week_binary, ${dayIdx + 1}, 1) = '1'
+      AND deleted_at IS NULL
   `;
   }
 
@@ -70,5 +70,17 @@ export class RoutineRepositoryImpl implements RoutineRepository {
       where: { routine_id },
       data: { title, days_of_week_binary },
     });
+  }
+
+  deleteRoutine(routine_id: string): Promise<routine> {
+    const date = new Date();
+    try {
+      return this.prisma.routine.update({
+        where: { routine_id },
+        data: { deleted_at: date },
+      });
+    } catch (error) {
+      console.error(error);
+    }
   }
 }

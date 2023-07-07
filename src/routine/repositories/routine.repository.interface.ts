@@ -30,4 +30,6 @@ export interface RoutineRepository {
     title: string,
     days_of_week_binary: string,
   ): Promise<routine>;
+
+  deleteRoutine(routine_id: string): Promise<routine>;
 }

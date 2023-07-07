@@ -5,7 +5,7 @@ import { SignupDto } from '../dto/signup.dto';
 import { SigninDto } from '../dto/signin.dto';
 import { SigninEntity, SignupEntity } from '../auth.entity';
 import { AuthInstanceService } from './auth.interface';
-import { UserRepository } from 'src/user/repository/user.repository';
+import { UserRepository } from '../../user/repository/user.repository';
 
 @Injectable()
 export class AuthService implements AuthInstanceService {

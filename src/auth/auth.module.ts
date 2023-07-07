@@ -3,10 +3,10 @@ import { AuthService } from './service/auth.service';
 import { AuthController } from './auth.controller';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
-import { PrismaService } from 'src/prisma.service';
-import { JwtStrategy } from 'src/auth/jwt.strategy';
-import { UserRepository } from 'src/user/repository/user.repository';
-import { UserService } from 'src/user/service/user.service';
+import { PrismaService } from '../prisma.service';
+import { JwtStrategy } from '../auth/jwt.strategy';
+import { UserRepository } from '../user/repository/user.repository';
+import { UserService } from '../user/service/user.service';
 
 @Module({
   imports: [

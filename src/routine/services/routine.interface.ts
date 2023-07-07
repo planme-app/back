@@ -1,5 +1,4 @@
-import { RoutineType } from '@prisma/client';
-import { CreateRoutineDTO } from '../dto/createRoutine.dto';
+import { RoutineType, routine } from '@prisma/client';
 
 export interface RoutineService {
   findRoutineById(routineId: string);
@@ -11,4 +10,5 @@ export interface RoutineService {
     daysOfWeek: string[],
     goal: string,
   );
+  deleteRoutine(routineId: string): Promise<routine>;
 }
