@@ -98,4 +98,34 @@ export class RoutineInstanceRepositoryImpl
       data: { routine_instance_id, goal, progress: false },
     });
   }
+
+  updateTimeRoutineInstance(
+    time_routine_instance_id: string,
+    goal: number,
+  ): Promise<time_routine_instance> {
+    return this.prisma.time_routine_instance.update({
+      where: { time_routine_instance_id },
+      data: { goal },
+    });
+  }
+
+  updateCountRoutineInstance(
+    count_routine_instance_id: string,
+    goal: number,
+  ): Promise<count_routine_instance> {
+    return this.prisma.count_routine_instance.update({
+      where: { count_routine_instance_id },
+      data: { goal },
+    });
+  }
+
+  updateBoolRoutineInstance(
+    bool_routine_instance_id: string,
+    goal: boolean,
+  ): Promise<bool_routine_instance> {
+    return this.prisma.bool_routine_instance.update({
+      where: { bool_routine_instance_id },
+      data: { goal },
+    });
+  }
 }
