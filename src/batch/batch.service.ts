@@ -21,7 +21,8 @@ export class BatchService {
   async handleCron() {
     try {
       console.log('createTodayRoutineInstances 실행중..');
-      this.createTodayRoutineInstances();
+      await this.createTodayRoutineInstances();
+      console.log('createTodayRoutineInstances 실행완료');
     } catch (error) {
       console.error(error);
     }
@@ -43,6 +44,10 @@ export class BatchService {
         );
 
       for (const routine of routines) {
+        if (this.hasTodayRoutineInstance(routine.routine_id, koreaTime)) {
+          break;
+        }
+
         // 2. 해당 루틴의 routine_instance, type_routine_instance 생성하기
         const routineInstance =
           await this.routineInstanceRepository.createRoutineInstance(
@@ -81,5 +86,14 @@ export class BatchService {
     }
 
     return goal.toString();
+  }
+
+  private async hasTodayRoutineInstance(routineId: string, nowKorTime: Date) {
+    const latestRoutineInstanceWithGoal =
+      await this.routineInstanceRepository.findRoutineInstancesWithGoal(
+        routineId,
+        nowKorTime,
+      );
+    return !!latestRoutineInstanceWithGoal;
   }
 }
