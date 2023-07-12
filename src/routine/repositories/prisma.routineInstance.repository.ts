@@ -48,7 +48,7 @@ export class RoutineInstanceRepositoryImpl
   findRoutineInstancesWithGoal(
     routine_id: string,
     startOfDay: Date,
-    endOfDay: Date,
+    endOfDay?: Date,
   ): Promise<RoutineInstanceWithIncludes> {
     return this.routines({
       where: {
